@@ -16,7 +16,7 @@
 # DEPENDENCIES:
 #
 # EXAMPLES:
-#   ./check-cmd-etime.rb -p <pattern> -w <seconds> -c <seconds>
+#   ./check-etimes-cmd.rb -p <pattern> -w <seconds> -c <seconds>
 #
 # LICENSE: 
 # Copyright Marcos Martínez <frommelmak@gmail.com>
