@@ -49,14 +49,21 @@ class CheckEtimesCmd < Sensu::Plugin::Check::CLI
     :description => "The command pattern to look for",
     :required => true
 
+  def etime_to_esec(etime)
+    m = /(\d+-)?(\d\d:)?(\d\d):(\d\d)/.match(etime)
+    (m[1]||0).to_i*86400 + (m[2]||0).to_i*3600 + (m[3]||0).to_i*60 + (m[4]||0).to_i
+  end
+
   def etime_procs(pattern)
     etimes_list = []
-    cmds = `ps axwwo etimes,command`
+    #cmds = `ps axwwo etimes,command`
+    cmds = `ps axwwo etime,command`
     cmds.each_line do |line|
       if line.match(pattern)
        etimes = line.split(' ')
        t = etimes[0].tr("^0-9", '').to_i
-       etimes_list.push(t)
+       secs=etime_to_esec(t)
+       etimes_list.push(secs)
       end
     end
     return etimes_list
