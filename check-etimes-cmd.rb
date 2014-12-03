@@ -56,15 +56,10 @@ class CheckEtimesCmd < Sensu::Plugin::Check::CLI
 
   def etime_procs(pattern)
     etimes_list = []
-    #cmds = `ps axwwo etimes,command`
-    cmds = `ps axwwo etime,command`
-    cmds.each_line do |line|
-      if line.match(pattern)
-       etimes = line.split(' ')
-       t = etimes[0].tr("^0-9", '').to_i
-       secs=etime_to_esec(t)
-       etimes_list.push(secs)
-      end
+    cmds = `ps axwwo etime,command|grep #{config[:pattern]}| grep -v grep |awk '{print $1}'`
+    cmds.each_line do |etime|
+      secs = etime_to_esec(etime)
+      etimes_list.push(secs)
     end
     return etimes_list
   end
