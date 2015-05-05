@@ -33,7 +33,7 @@ require 'pathname'
 class CheckMountPoints < Sensu::Plugin::Check::CLI
 
   option :paths,
-         description: 'Mountpoint dir patgs to check, comma-separated',
+         description: 'Mountpoint directory paths to check, comma-separated',
          short: '-p PATHS',
          long: '--path PATHS',
          proc: proc { |a| a.split(',') },
