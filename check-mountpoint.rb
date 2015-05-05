@@ -48,7 +48,12 @@ class CheckMountPoints < Sensu::Plugin::Check::CLI
         @bad_mp.push(path)
       end
     end
-    return mp
+    if @bad_mp.count() > 0
+      return false 
+    else
+      return true
+    fi
+    end
   end
 
   def run
