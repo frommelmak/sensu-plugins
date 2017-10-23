@@ -14,6 +14,13 @@
 #
 # DEPENDENCIES:
 #
+# Add the following 3 lines into you sensu file in the /etc/sudorers.d/ folder
+#
+#   Defaults:sensu !requiretty
+#   Defaults:sensu secure_path = /opt/sensu/embedded/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+# 
+#   sensu   ALL=(ALL)NOPASSWD: ALL
+#
 # USAGE:
 #   ./check-pm2.rb -u <username> [-p <app_name>] [--status | -memory | -cpu ]] -w <seconds> -c <seconds>
 #
@@ -56,8 +63,7 @@ class CheckPM2 < Sensu::Plugin::Check::CLI
     :description => "The user running pm2",
     :short => '-u USER',
     :long => '--username=USER',
-    :required => true,
-    :default => 'root'
+    :required => true
 
   option :status,
     :description => "Look for the status to throw alerts\n \
@@ -81,7 +87,7 @@ class CheckPM2 < Sensu::Plugin::Check::CLI
 
   def run
 
-    json = `pm2 jlist`
+    json = `sudo -iu #{config[:username]} pm2 jlist`
     processes_hash = JSON.parse(json)
     n = 0
     limit = 'none'
