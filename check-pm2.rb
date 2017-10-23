@@ -4,7 +4,7 @@
 #
 #
 # DESCRIPTION:
-#  Check all processes managed by the PM2 process manager are running.
+#  Check check if all the processes managed by the PM2 manager are running.
 #
 # OUTPUT:
 #   plain-text
