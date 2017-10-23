@@ -26,11 +26,11 @@
 #
 # EXAMPLES:
 #
-#   ./check_pm2.rb -w 1 -c 1 -s online 
+#   ./check_pm2.rb -u my_user -w 1 -c 1 -s online 
 #
 #   If one process managed by PM2 are not in online state, it throws a critical.
 #
-#   ./check_pm2.rb -w 1 -c 2 -m 60
+#   ./check_pm2.rb -u my_user -w 1 -c 2 -m 60
 #
 #   If one process is consuming 60 MB or more then the check throws a warning.
 #   If 2 o more process are consuming 60 MB or more, then it throws a critical.
