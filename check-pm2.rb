@@ -14,7 +14,7 @@
 #
 # DEPENDENCIES:
 #
-# Add the following 3 lines into you sensu file in the /etc/sudorers.d/ folder
+# Add the following 3 lines into your sensu file in the /etc/sudorers.d/ folder
 #
 #   Defaults:sensu !requiretty
 #   Defaults:sensu secure_path = /opt/sensu/embedded/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
