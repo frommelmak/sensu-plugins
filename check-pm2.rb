@@ -14,8 +14,15 @@
 #
 # DEPENDENCIES:
 #
-# EXAMPLES:
+# USAGE:
 #   ./check-pm2.rb -u <username> [-p <app_name>] [--status | -memory | -cpu ]] -w <seconds> -c <seconds>
+#
+# EXAMPLE:2
+#
+#   ./check_pm2.rb -w 1 -c 2 -m 60
+#
+#   If one process is consuming 60 MB or more then the check throws a warning.
+#   If 2 o more process are consuming 60 MB or more, then it throws a critical.
 #
 # LICENSE: 
 # Copyright Marcos Martínez <frommelmak@gmail.com>
@@ -91,52 +98,29 @@ class CheckPM2 < Sensu::Plugin::Check::CLI
        exit 1
     end
 
-    if config[:status]
-      processes_hash.each do |process|
-        metrics[n] = process["pm2_env"]["status"]
-        limit="status #{config[:status]}"
-        n += 1
-      end
-      bad_metric_counter = 0
-      metrics.each do |metric|
-        if metric != config[:status]
-           bad_metric_counter += 1
+    bad_metric_counter =0
+    processes_hash.each do |process|
+      if config[:status]
+        limit="not #{config[:status]}"
+        if config[:status] != process["pm2_env"]["status"]
+          bad_metric_counter += 1
         end
-      end
-      msg = "There are #{bad_metric_counter} processes in bad status (metric: #{limit})"
-      critical msg if bad_metric_counter >= config[:critical]
-      warning msg if bad_metric_counter >= config[:warning]
-      ok msg
-    end
+      elsif config[:memory]
+        limit="memory > #{config[:memory]} MB"
+        if process["monit"]["memory"].fdiv(1024*1024).round >= config[:memory].to_i
+          bad_metric_counter += 1
+        end
+      elsif config[:load]
+        limit="load > #{config[:cpu]} %"
+        if process["monit"]["cpu"] >= config[:load].to_i
+          bad_metric_counter += 1
+        end
 
-    if config[:memory]
-      processes_hash.each do |process|
-        metrics[n] = process["monit"]["memory"].fdiv(1024*1024).round
-        limit="memory"
-        n += 1
-      end
-      bad_metric_counter_c = 0
-      bad_metric_counter_w = 0
-      metrics.each do |metric|
-        if metric > config[:warning].to_i
-           puts config[:warning].to_i
-           bad_metric_counter_w += 1
-        end
-        if metric > config[:critical].to_i
-           puts config[:critical].to_i
-           bad_metric_counter_c += 1
-        end
       end
     end
-
-    #app_names[n] = process["name"]
-    #cpus[n] =  process["monit"]["cpu"]
-
-    ok = n - (bad_metric_counter_w + bad_metric_counter_c)
-    msg = "ok: #{ok}, warning: #{bad_metric_counter_w}, critical: #{bad_metric_counter_c} (metric: #{limit})"
-    critical msg if bad_metric_counter_c >= config[:critical]
-    warning msg if bad_metric_counter_w >= config[:warning]
+    msg = "There are #{bad_metric_counter} processes in bad status (#{limit})"
+    critical msg if bad_metric_counter >= config[:critical]
+    warning msg if bad_metric_counter >= config[:warning]
     ok msg
-
   end
 end
