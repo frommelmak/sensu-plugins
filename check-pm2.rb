@@ -17,7 +17,11 @@
 # USAGE:
 #   ./check-pm2.rb -u <username> [-p <app_name>] [--status | -memory | -cpu ]] -w <seconds> -c <seconds>
 #
-# EXAMPLE:2
+# EXAMPLES:
+#
+#   ./check_pm2.rb -w 1 -c 1 -s online 
+#
+#   If one process managed by PM2 are not in online state, it throws a critical.
 #
 #   ./check_pm2.rb -w 1 -c 2 -m 60
 #
@@ -55,13 +59,6 @@ class CheckPM2 < Sensu::Plugin::Check::CLI
     :required => true,
     :default => 'root'
 
-  option :app_name,
-    :description => "The App name to look for. All if not pressent",
-    :short => '-p APP_NAME',
-    :long => '--process=APP_NAME',
-    :required => false,
-    :default => 'all'
-
   option :status,
     :description => "Look for the status to throw alerts\n \
                      \t\t     Available status: online, stopping, stopped, launching, errored, one-launch-status",
@@ -71,14 +68,14 @@ class CheckPM2 < Sensu::Plugin::Check::CLI
 
   option :memory,
     :description => "Look for the max amount of memory allowed for a process to throw alerts",
-    :short => '-m',
-    :long => '--memory',
+    :short => '-m MEM',
+    :long => '--memory=MEM',
     :required => false
 
   option :cpu,
     :description => "Look for the % of CPU usage to throw alerts",
-    :short => '-l',
-    :long => '--load ',
+    :short => '-l LOAD',
+    :long => '--load=LOAD',
     :required => false
 
 
@@ -87,11 +84,7 @@ class CheckPM2 < Sensu::Plugin::Check::CLI
     json = `pm2 jlist`
     processes_hash = JSON.parse(json)
     n = 0
-    app_names = []
-    metrics= []
-    cpus = []
-    mems = []
-    limit = config[:status]
+    limit = 'none'
 
     if config[:warning] > config[:critical]
        puts "ERROR: Warning threshold can not be greater than Critical!"
