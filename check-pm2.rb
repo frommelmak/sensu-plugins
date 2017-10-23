@@ -22,7 +22,7 @@
 #   sensu   ALL=(ALL)NOPASSWD: ALL
 #
 # USAGE:
-#   ./check-pm2.rb -u <username> [-p <app_name>] [--status | -memory | -cpu ]] -w <seconds> -c <seconds>
+#   ./check-pm2.rb -u <username> [--status | -memory | -cpu ]] -w <seconds> -c <seconds>
 #
 # EXAMPLES:
 #
