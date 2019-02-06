@@ -67,7 +67,7 @@ class CheckGenericCountQuery < Sensu::Plugin::Check::CLI
         conn = Mysql.new config[:hostname], config[:user], config[:password], config[:database], config[:port].to_i, config[:socket]
         rs = conn.query config[:query]
         num = rs.fetch_row
-        ok "There number of items (#{num[0]}) returned by the query is ok" if num[0].to_i == 0
+        ok "There number of items (#{num[0]}) returned by the query is ok" if num[0].to_i < config[:warn]
         critical "The query returns #{num[0]} which is above the critical threshold defined by the check" if num[0].to_i >= config[:crit]
         warning  "The query returns #{num[0]} which is above the warnign threshold deined by the check " if num[0].to_i > config[:warn]
     rescue Mysql::Error => e
