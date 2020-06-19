@@ -2,7 +2,7 @@
 #
 # A wrapper arround the check_mondodb.py check plugin to get row count metric from a given collection
 #
-# author: frommelmelak@gmail.com
+# author: frommelmak@gmail.com
 #
 # Graphite output format:
 #
